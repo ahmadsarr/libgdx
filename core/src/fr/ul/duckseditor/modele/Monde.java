@@ -12,29 +12,14 @@ import static  fr.ul.duckseditor.view.EditorScreen.*;
 public class Monde {
     private World world;
     private Body duckBody;
-    private Texture duck;
+    private Duck duck;
+    private Beam beam;
     private Box2DDebugRenderer debugRenderer;
     public Monde()
     {
         world=new World(new Vector2(0,-10f),true);
-
-
-
-        FixtureDef fixtureDef=new FixtureDef();
-        PolygonShape shape=new PolygonShape();
-        BodyDef bodyDef=new BodyDef();
-        duck=TextureFactory.getDuck();
-        bodyDef=new BodyDef();
-        bodyDef.type=BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(duck.getWidth()/2,60+duck.getHeight());
-        duckBody=world.createBody(bodyDef);
-         CircleShape sha=new CircleShape();
-         sha.setRadius(3f);
-
-        fixtureDef=new FixtureDef();
-        fixtureDef.density=10;
-        fixtureDef.shape=sha;
-        duckBody.createFixture(fixtureDef);
+        duck=new Duck(this);
+        beam=new Beam(this);
 
 
 
@@ -44,7 +29,7 @@ public class Monde {
         return world;
     }
 
-    public Texture getDuck() {
+    public Duck getDuck() {
         return duck;
     }
 
@@ -55,8 +40,8 @@ public class Monde {
     {
 
         BodyDef groundBodyDef = new BodyDef();
-        groundBodyDef.type=BodyDef.BodyType.KinematicBody;
-       groundBodyDef.position.set(new Vector2(WORLD_WIDTH/2,6));
+        groundBodyDef.type=BodyDef.BodyType.StaticBody;
+       groundBodyDef.position.set(new Vector2(WORLD_WIDTH/2,45));
         Body groundBody = world.createBody(groundBodyDef);
 
         PolygonShape groundBox = new PolygonShape();
@@ -65,5 +50,9 @@ public class Monde {
         groundBox.setAsBox(WORLD_WIDTH/2, 6);
         groundBody.createFixture(groundBox, 0.0f);
         groundBox.dispose();
+    }
+
+    public Box2DDebugRenderer getDebugRenderer() {
+        return debugRenderer;
     }
 }

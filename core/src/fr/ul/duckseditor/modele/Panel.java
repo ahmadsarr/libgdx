@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
 import fr.ul.duckseditor.datafactory.TextureFactory;
 
-public class Duck {
+public class Panel {
     private Monde monde;
-    private Texture duck;
-    private Body duckBody;
-    public Duck(Monde monde)
+    private Texture beam;
+    private Body body;
+    public Panel(Monde monde)
     {
         this.monde=monde;
         World world=monde.getWorld();
@@ -17,26 +17,26 @@ public class Duck {
         FixtureDef fixtureDef=new FixtureDef();
         PolygonShape shape=new PolygonShape();
         BodyDef bodyDef=new BodyDef();
-        duck= TextureFactory.getDuck();
+        beam= TextureFactory.getDuck();
         bodyDef=new BodyDef();
         bodyDef.type=BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(duck.getWidth()/2,60+duck.getHeight());
-        duckBody=world.createBody(bodyDef);
+        bodyDef.position.set(beam.getWidth()/2,60+beam.getHeight());
+        body=world.createBody(bodyDef);
         CircleShape sha=new CircleShape();
         sha.setRadius(20f);
 
         fixtureDef=new FixtureDef();
         fixtureDef.density=10;
         fixtureDef.shape=sha;
-        duckBody.createFixture(fixtureDef);
+        body.createFixture(fixtureDef);
 
     }
     public void draw(SpriteBatch sb)
     {
-        sb.draw(duck,duckBody.getPosition().x,duckBody.getPosition().y,40,40);
+        sb.draw(beam,body.getPosition().x,body.getPosition().y,60,60);
     }
 
     public Body getDuckBody() {
-        return duckBody;
+        return body;
     }
 }
