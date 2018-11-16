@@ -42,6 +42,8 @@ public class EditorScreen extends ScreenAdapter  {
         sb.begin();
         sb.draw(TextureFactory.getBackground(),0,0,WORLD_WIDTH,WORLD_HEIGTH);
         monde.getDuck().draw(sb);
+        monde.getBeam().draw(sb);
+        monde.getPanel().draw(sb);
         sb.end();
 
     }

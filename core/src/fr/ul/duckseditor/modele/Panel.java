@@ -17,7 +17,7 @@ public class Panel {
         FixtureDef fixtureDef=new FixtureDef();
         PolygonShape shape=new PolygonShape();
         BodyDef bodyDef=new BodyDef();
-        beam= TextureFactory.getDuck();
+        beam= TextureFactory.getPanel();
         bodyDef=new BodyDef();
         bodyDef.type=BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(beam.getWidth()/2,60+beam.getHeight());
@@ -33,7 +33,7 @@ public class Panel {
     }
     public void draw(SpriteBatch sb)
     {
-        sb.draw(beam,body.getPosition().x,body.getPosition().y,60,60);
+        sb.draw(beam,0,0);
     }
 
     public Body getDuckBody() {

@@ -14,12 +14,14 @@ public class Monde {
     private Body duckBody;
     private Duck duck;
     private Beam beam;
+    private Panel panel;
     private Box2DDebugRenderer debugRenderer;
     public Monde()
     {
         world=new World(new Vector2(0,-10f),true);
         duck=new Duck(this);
         beam=new Beam(this);
+        panel=new Panel(this);
 
 
 
@@ -36,6 +38,15 @@ public class Monde {
     public Body getDuckBody() {
         return duckBody;
     }
+
+    public Beam getBeam() {
+        return beam;
+    }
+
+    public Panel getPanel() {
+        return panel;
+    }
+
     public void createGround()
     {
 
