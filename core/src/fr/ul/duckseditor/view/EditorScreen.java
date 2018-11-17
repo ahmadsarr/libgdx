@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import fr.ul.duckseditor.datafactory.TextureFactory;
 import fr.ul.duckseditor.modele.Monde;
 
-public class EditorScreen extends ScreenAdapter {
+public class EditorScreen extends ScreenAdapter  {
     public static  final int WORLD_WIDTH=800;
     public static  final int WORLD_HEIGTH=480;
     SpriteBatch sb;
@@ -34,12 +34,14 @@ public class EditorScreen extends ScreenAdapter {
     public void render(float delta) {
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        monde.createGround();
-        monde.getWorld().step(Gdx.graphics.getDeltaTime(),6,2);
-       // monde.getDuck().setPosition();
+        monde.getWorld().step(Gdx.graphics.getDeltaTime(),6,2);;
         sb.begin();
         sb.draw(TextureFactory.getBackground(),0,0,WORLD_WIDTH,WORLD_HEIGTH);
-        sb.draw(monde.getDuck(),monde.getDuckBody().getPosition().x,monde.getDuckBody().getPosition().y);
+        monde.getDuck().draw(sb);
+        monde.getCarre().draw(sb);
+        monde.getPanel().draw(sb);
+        monde.getRectangle().draw(sb);
+
         sb.end();
 
     }

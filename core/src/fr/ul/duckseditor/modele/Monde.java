@@ -1,42 +1,109 @@
 package fr.ul.duckseditor.modele;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import fr.ul.duckseditor.datafactory.Constant;
 import fr.ul.duckseditor.datafactory.TextureFactory;
 import fr.ul.duckseditor.view.EditorScreen;
-import static  fr.ul.duckseditor.view.EditorScreen.*;
+
+import static fr.ul.duckseditor.datafactory.Constant.*;
 
 public class Monde {
     private World world;
-    private Body duckBody;
-    private Texture duck;
-    private Box2DDebugRenderer debugRenderer;
+    private Duck duck;
+    private Body groundBody;
+    private Bloc carre;
+    private Bloc rectangle;
+    private Panel panel;
+
     public Monde()
     {
         world=new World(new Vector2(0,-10f),true);
+        duck=new Duck(this);
+        border();
+        carre=new Bloc(this,TextureFactory.getBlock(),WORLD_WIDTH/2,WORLD_HEIGTH,CARRE_WIDTH,CARRE_WIDTH);
+        rectangle=new Bloc(this,TextureFactory.getBeam(),WORLD_WIDTH/2,WORLD_HEIGTH,RECTANGLE_WIDTH,RECTANGLE_HEIGHT);
+        panel=new Panel(this);
+        Gdx.input.setInputProcessor(new InputProcessor() {
+            @Override
+            public boolean keyDown(int keycode) {
+                if(keycode == Input.Keys.RIGHT)
+                    duck.getBody().setLinearVelocity(10f, 0f);
+                if(keycode == Input.Keys.LEFT)
+                    duck.getBody().setLinearVelocity(-10f,0f);
+                if(keycode == Input.Keys.UP)
+                    duck.getBody().applyForceToCenter(0f,10f,true);
+                if(keycode == Input.Keys.DOWN)
+                    duck.getBody().applyForceToCenter(0f, -10f, true);
+                return true;
+            }
 
+            @Override
+            public boolean keyUp(int keycode) {
+                return false;
+            }
 
+            @Override
+            public boolean keyTyped(char character) {
+                return false;
+            }
 
-        FixtureDef fixtureDef=new FixtureDef();
-        PolygonShape shape=new PolygonShape();
-        BodyDef bodyDef=new BodyDef();
-        duck=TextureFactory.getDuck();
-        bodyDef=new BodyDef();
-        bodyDef.type=BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(duck.getWidth()/2,60+duck.getHeight());
-        duckBody=world.createBody(bodyDef);
-         CircleShape sha=new CircleShape();
-         sha.setRadius(3f);
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                return false;
+            }
 
-        fixtureDef=new FixtureDef();
-        fixtureDef.density=10;
-        fixtureDef.shape=sha;
-        duckBody.createFixture(fixtureDef);
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                return false;
+            }
 
+            @Override
+            public boolean touchDragged(int screenX, int screenY, int pointer) {
+                return false;
+            }
 
+            @Override
+            public boolean mouseMoved(int screenX, int screenY) {
+                return false;
+            }
+
+            @Override
+            public boolean scrolled(int amount) {
+                return false;
+            }
+        });
+        world.setContactListener(new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                duck.getBody().applyForceToCenter(0,MathUtils.random(20,50),true);
+                System.out.println("ici");
+                //duck.getBody().
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+
+            }
+        });
 
     }
 
@@ -44,26 +111,41 @@ public class Monde {
         return world;
     }
 
-    public Texture getDuck() {
+    public Duck getDuck() {
         return duck;
     }
 
-    public Body getDuckBody() {
-        return duckBody;
+    public Bloc getCarre() {
+        return carre;
     }
-    public void createGround()
+
+    public Bloc getRectangle() {
+        return rectangle;
+    }
+
+    public Body getGroundBody() {
+        return groundBody;
+    }
+
+    public Panel getPanel() {
+        return panel;
+    }
+
+    public void border()
     {
 
-        BodyDef groundBodyDef = new BodyDef();
-        groundBodyDef.type=BodyDef.BodyType.KinematicBody;
-       groundBodyDef.position.set(new Vector2(WORLD_WIDTH/2,6));
-        Body groundBody = world.createBody(groundBodyDef);
-
-        PolygonShape groundBox = new PolygonShape();
-        //float[] pts={0,6,0,36,64,36,64,6};
-        //groundBox.set(pts);
-        groundBox.setAsBox(WORLD_WIDTH/2, 6);
-        groundBody.createFixture(groundBox, 0.0f);
-        groundBox.dispose();
+        BodyDef bodyDef=new BodyDef();
+        bodyDef.type=BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(0, Constant.WORLD_HEIGTH/6);
+        PolygonShape shape=new PolygonShape();
+        float[] points={0,WORLD_HEIGTH/6,0,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH/6};
+        shape.set(points);
+        shape.setAsBox(WORLD_WIDTH,6);
+        groundBody=world.createBody(bodyDef);
+        FixtureDef fixtureDef=new FixtureDef();
+        fixtureDef.density=0;
+        fixtureDef.shape=shape;
+        groundBody.createFixture(fixtureDef);
+        shape.dispose();
     }
 }
