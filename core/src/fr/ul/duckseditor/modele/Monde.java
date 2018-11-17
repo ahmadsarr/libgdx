@@ -20,18 +20,56 @@ public class Monde {
     private World world;
     private Duck duck;
     private Body groundBody;
-    private Bloc carre;
-    private Bloc rectangle;
+
+    private Object carre;
+    private Object rectangle;
+
+    private Object targetBeige;
+    private Object targetBleu;
+
+    private Object play;
+    private Object stop;
+
+    private  Object cancel;
+    private  Object supprimer;
+    private  Object trash;
+
+    private  Object save;
+    private  Object load;
+    private  Object rewrite;
+
+    private Object left;
+    private Object rigth;
     private Panel panel;
+
 
     public Monde()
     {
         world=new World(new Vector2(0,-10f),true);
         duck=new Duck(this);
         border();
-        carre=new Bloc(this,TextureFactory.getBlock(),WORLD_WIDTH/2,WORLD_HEIGTH,CARRE_WIDTH,CARRE_WIDTH);
-        rectangle=new Bloc(this,TextureFactory.getBeam(),WORLD_WIDTH/2,WORLD_HEIGTH,RECTANGLE_WIDTH,RECTANGLE_HEIGHT);
         panel=new Panel(this);
+        carre=new Object(this,TextureFactory.getBlock(),0,0,CARRE_WIDTH,CARRE_WIDTH, BodyDef.BodyType.StaticBody);
+        rectangle=new Object(this,TextureFactory.getBeam(),carre.width+10,carre.y,RECTANGLE_WIDTH,RECTANGLE_HEIGHT, BodyDef.BodyType.StaticBody);
+
+        targetBeige=new Object(this,TextureFactory.getTargetbeige(),carre.x,rectangle.height+rectangle.y+10,CARRE_WIDTH,CARRE_WIDTH, BodyDef.BodyType.StaticBody);
+        targetBleu=new Object(this,TextureFactory.getTargetblue(),targetBeige.x+targetBeige.width+10,rectangle.height+rectangle.y+10,CARRE_WIDTH,CARRE_WIDTH, BodyDef.BodyType.StaticBody);
+
+        play=new Object(this,TextureFactory.getPlay(),0,targetBeige.height+targetBeige.y+40,CARRE_WIDTH/2,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
+        stop=new Object(this,TextureFactory.getStop(),play.x+targetBeige.width+10,play.y,CARRE_WIDTH/2,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
+        trash=new Object(this,TextureFactory.getTrash(),panel.width/4,stop.height+stop.y+10,CARRE_WIDTH/2,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
+
+        load=new Object(this,TextureFactory.getLoad(),0,trash.height+trash.y+40,CARRE_WIDTH/2,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
+        rewrite=new Object(this,TextureFactory.getRewrite(),play.x+targetBeige.width+10,load.y,CARRE_WIDTH/2,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
+        save=new Object(this,TextureFactory.getSave(),panel.width/4,rewrite.height+rewrite.y+10,CARRE_WIDTH/2,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
+
+        left=new Object(this,TextureFactory.getLeft(),0,panel.height-50,CARRE_WIDTH,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
+        rigth=new Object(this,TextureFactory.getRigth(),left.width+10,panel.height-50,CARRE_WIDTH,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
+
+
+
+        float posX=panel.width/2;
+        float posY=panel.height-TextureFactory.getCancel().getWidth();
         Gdx.input.setInputProcessor(new InputProcessor() {
             @Override
             public boolean keyDown(int keycode) {
@@ -115,11 +153,11 @@ public class Monde {
         return duck;
     }
 
-    public Bloc getCarre() {
+    public Object getCarre() {
         return carre;
     }
 
-    public Bloc getRectangle() {
+    public Object getRectangle() {
         return rectangle;
     }
 
@@ -129,6 +167,24 @@ public class Monde {
 
     public Panel getPanel() {
         return panel;
+    }
+    public void render(float delta,SpriteBatch sb)
+    {
+       panel.draw(sb);
+       duck.draw(sb);
+//       cancel.draw(sb);
+       carre.draw(sb);
+       rectangle.draw(sb);
+       targetBeige.draw(sb);
+       targetBleu.draw(sb);
+       play.draw(sb);
+       stop.draw(sb);
+       trash.draw(sb);
+       save.draw(sb);
+       load.draw(sb);
+       rewrite.draw(sb);
+       left.draw(sb);
+       rigth.draw(sb);
     }
 
     public void border()

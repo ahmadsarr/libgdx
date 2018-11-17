@@ -9,8 +9,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import fr.ul.duckseditor.datafactory.TextureFactory;
 import fr.ul.duckseditor.modele.Monde;
+import javafx.stage.Stage;
 
 public class EditorScreen extends ScreenAdapter  {
     public static  final int WORLD_WIDTH=800;
@@ -19,7 +21,7 @@ public class EditorScreen extends ScreenAdapter  {
     OrthographicCamera camera;
     private World world;
     private Monde monde;
-
+    private FitViewport vp;
     public EditorScreen() {
         TextureFactory.load();
         monde=new Monde();
@@ -37,11 +39,7 @@ public class EditorScreen extends ScreenAdapter  {
         monde.getWorld().step(Gdx.graphics.getDeltaTime(),6,2);;
         sb.begin();
         sb.draw(TextureFactory.getBackground(),0,0,WORLD_WIDTH,WORLD_HEIGTH);
-        monde.getDuck().draw(sb);
-        monde.getCarre().draw(sb);
-        monde.getPanel().draw(sb);
-        monde.getRectangle().draw(sb);
-
+        monde.render(delta,sb);
         sb.end();
 
     }

@@ -1,39 +1,35 @@
 package fr.ul.duckseditor.modele;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import fr.ul.duckseditor.datafactory.Constant;
 import fr.ul.duckseditor.datafactory.TextureFactory;
+import static fr.ul.duckseditor.datafactory.Constant.CARRE_WIDTH;
 
 public class Panel {
 
     private Monde monde;
     private Texture texture;
-    private Body body;
+    public final float posX=0;
+    public final float posY=0;
+    public final float width=Constant.WORLD_WIDTH/6;
+    public final float height=Constant.WORLD_HEIGTH;
+
+
     public Panel(Monde monde)
     {
         this.texture=TextureFactory.getPanel();
-        FixtureDef fixtureDef=new FixtureDef();
-        BodyDef bodyDef=new BodyDef();
-        bodyDef=new BodyDef();
-        bodyDef.type=BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(0,0);
-        body=monde.getWorld().createBody(bodyDef);
-        PolygonShape shape=new PolygonShape();
-        shape.setAsBox(Constant.WORLD_WIDTH/6,Constant.WORLD_HEIGTH);
-        fixtureDef=new FixtureDef();
-        fixtureDef.density=3;
-        fixtureDef.shape=shape;
-        body.createFixture(fixtureDef);
-
     }
     public void draw(SpriteBatch sb)
     {
-        sb.draw(texture,0,0, Constant.WORLD_WIDTH/6,Constant.WORLD_HEIGTH);
+       sb.draw(texture,0,0,width,height);
+
     }
-    public Body getBody()
-    {
-        return body;
-    }
+
+
 }
