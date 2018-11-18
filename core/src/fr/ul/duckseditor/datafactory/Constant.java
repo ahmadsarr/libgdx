@@ -5,7 +5,7 @@ public class Constant {
     public static  final int WORLD_WIDTH=800;
     public static  final int WORLD_HEIGTH=480;
     public static float DUCK_WIDTH=WORLD_WIDTH/15;
-    public static float DUCK_HEIGHT=WORLD_HEIGTH/4;
+    public static float DUCK_HEIGHT=WORLD_HEIGTH/5;
     public static  final int CARRE_WIDTH=WORLD_WIDTH/15;
     public static  final float RECTANGLE_WIDTH=WORLD_WIDTH/15;
     public static  final float RECTANGLE_HEIGHT=WORLD_HEIGTH/5;

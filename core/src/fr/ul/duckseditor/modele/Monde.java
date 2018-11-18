@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +14,9 @@ import com.badlogic.gdx.physics.box2d.*;
 import fr.ul.duckseditor.datafactory.Constant;
 import fr.ul.duckseditor.datafactory.TextureFactory;
 import fr.ul.duckseditor.view.EditorScreen;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static fr.ul.duckseditor.datafactory.Constant.*;
 
@@ -42,10 +46,14 @@ public class Monde {
     private Object rigth;
     private Panel panel;
 
-
-    public Monde()
+    private OrthographicCamera camera;
+    private Listener listener;
+    private List<Object> objectOnSurface=new ArrayList<Object>();
+    public Monde(OrthographicCamera camera)
     {
         world=new World(new Vector2(0,-10f),true);
+        this.camera=camera;
+        listener=new Listener(this);
         duck=new Duck(this);
         border();
         panel=new Panel(this);
@@ -70,55 +78,7 @@ public class Monde {
 
         float posX=panel.width/2;
         float posY=panel.height-TextureFactory.getCancel().getWidth();
-        Gdx.input.setInputProcessor(new InputProcessor() {
-            @Override
-            public boolean keyDown(int keycode) {
-                if(keycode == Input.Keys.RIGHT)
-                    duck.getBody().setLinearVelocity(10f, 0f);
-                if(keycode == Input.Keys.LEFT)
-                    duck.getBody().setLinearVelocity(-10f,0f);
-                if(keycode == Input.Keys.UP)
-                    duck.getBody().applyForceToCenter(0f,10f,true);
-                if(keycode == Input.Keys.DOWN)
-                    duck.getBody().applyForceToCenter(0f, -10f, true);
-                return true;
-            }
-
-            @Override
-            public boolean keyUp(int keycode) {
-                return false;
-            }
-
-            @Override
-            public boolean keyTyped(char character) {
-                return false;
-            }
-
-            @Override
-            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                return false;
-            }
-
-            @Override
-            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-                return false;
-            }
-
-            @Override
-            public boolean touchDragged(int screenX, int screenY, int pointer) {
-                return false;
-            }
-
-            @Override
-            public boolean mouseMoved(int screenX, int screenY) {
-                return false;
-            }
-
-            @Override
-            public boolean scrolled(int amount) {
-                return false;
-            }
-        });
+        Gdx.input.setInputProcessor(listener);
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
@@ -165,6 +125,66 @@ public class Monde {
         return groundBody;
     }
 
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public Object getTargetBeige() {
+        return targetBeige;
+    }
+
+    public Object getTargetBleu() {
+        return targetBleu;
+    }
+
+    public Object getPlay() {
+        return play;
+    }
+
+    public Object getStop() {
+        return stop;
+    }
+
+    public Object getCancel() {
+        return cancel;
+    }
+
+    public Object getSupprimer() {
+        return supprimer;
+    }
+
+    public Object getTrash() {
+        return trash;
+    }
+
+    public Object getSave() {
+        return save;
+    }
+
+    public Object getLoad() {
+        return load;
+    }
+
+    public Object getRewrite() {
+        return rewrite;
+    }
+
+    public Object getLeft() {
+        return left;
+    }
+
+    public Object getRigth() {
+        return rigth;
+    }
+
+    public Listener getListener() {
+        return listener;
+    }
+
+    public List<Object> getObjectOnSurface() {
+        return objectOnSurface;
+    }
+
     public Panel getPanel() {
         return panel;
     }
@@ -185,6 +205,11 @@ public class Monde {
        rewrite.draw(sb);
        left.draw(sb);
        rigth.draw(sb);
+       for(Object o:objectOnSurface)
+       {
+           o.draw(sb);
+       }
+
     }
 
     public void border()
@@ -203,5 +228,16 @@ public class Monde {
         fixtureDef.shape=shape;
         groundBody.createFixture(fixtureDef);
         shape.dispose();
+    }
+    public boolean isObjectInSurface(Body body)
+    {
+        for(Object object:objectOnSurface)
+        {
+            if(body==object.getBody())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

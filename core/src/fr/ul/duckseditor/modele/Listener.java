@@ -27,7 +27,7 @@ public class Listener implements InputProcessor {
     Monde monde;
     List<Body> hasBeenTouch=new ArrayList<Body>();
     private Body bodyMoved;
-    private Vector2 depart;
+    private Vector2 depart=null;
     private int initAngle;
     public Listener(Monde monde)
     {
@@ -58,7 +58,6 @@ public class Listener implements InputProcessor {
             @Override
             public boolean reportFixture(Fixture fixture) {
                 hasBeenTouch.add(fixture.getBody());
-                System.out.println(hasBeenTouch.size());
                 return true;
             }
         },v.x-3,v.y-6,v.x+3,v.y+6);
@@ -91,7 +90,11 @@ public class Listener implements InputProcessor {
 
             }else if(monde.isObjectInSurface(body)) {
                 bodyMoved=body;
+                Data data=new Data();
+                data.vector2=new Vector2(v.x,v.y);
+                body.setUserData(data);
                 depart=new Vector2(v.x,v.y);
+                System.out.println("object on surface");
             }else
             {
                 System.out.println("pas de body");
@@ -104,15 +107,25 @@ public class Listener implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        bodyMoved=null;
         return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        Vector3 vector3=monde.getCamera().unproject(new Vector3(screenX,screenY,0));
-        if(bodyMoved!=null) {
-            bodyMoved.setTransform(screenX, screenY, 20);
-            System.out.println("bodyMoved non null");
+        if(bodyMoved!=null)
+        {
+            Vector3 v=monde.getCamera().unproject(new Vector3(screenX,screenY,0));
+            Data data=(Data) bodyMoved.getUserData();
+            float mass=bodyMoved.getMass();
+            float volacity=16.67f;
+            float impulse=mass*volacity;
+            Vector2 vector2=new Vector2();
+            vector2.set(data.vector2).sub(new Vector2(v.x,v.y));
+            vector2.nor();
+            vector2.scl(impulse);
+         monde.getDuck().getBody().applyLinearImpulse(vector2,bodyMoved.getWorldCenter(),true);
+            data.vector2.set(new Vector2(v.x,v.y));
         }
         return true;
     }
@@ -129,5 +142,9 @@ public class Listener implements InputProcessor {
 
     public List<Body> getHasBeenTouch() {
         return hasBeenTouch;
+    }
+    public class Data
+    {
+        public Vector2 vector2;
     }
 }

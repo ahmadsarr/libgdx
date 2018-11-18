@@ -24,16 +24,19 @@ public class EditorScreen extends ScreenAdapter  {
     private FitViewport vp;
     public EditorScreen() {
         TextureFactory.load();
-        monde=new Monde();
-        camera=new OrthographicCamera();
-        camera.setToOrtho(false,WORLD_WIDTH,WORLD_HEIGTH);
+        camera=new OrthographicCamera(WORLD_WIDTH,WORLD_HEIGTH);
+        monde=new Monde(camera);
+        //camera.setToOrtho(false,);
         sb=new SpriteBatch();
-        sb.setProjectionMatrix(camera.combined);
+
 
     }
 
     @Override
     public void render(float delta) {
+        camera.position.set(camera.viewportWidth/2f,camera.viewportHeight/2f,0);
+        sb.setProjectionMatrix(camera.combined);
+        camera.update();
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         monde.getWorld().step(Gdx.graphics.getDeltaTime(),6,2);;
