@@ -141,7 +141,9 @@ public class Listener implements InputProcessor {
                 vector2.sub(last);
                 vector2.nor();
                 vector2.scl(impulse);
-               bodyMoved.applyLinearImpulse(vector2,bodyMoved.getLocalCenter(),false);
+                //bodyMoved.
+
+              // bodyMoved.applyForceToCenter(vector2,true);
                 last.set(vector2);
             }
         }

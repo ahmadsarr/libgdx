@@ -33,14 +33,15 @@ public class Object {
         PolygonShape shape=new PolygonShape();
         shape.setAsBox(width,height);
         fixtureDef=new FixtureDef();
-        fixtureDef.density=0.1f;
+        fixtureDef.density=0.01f;
+        fixtureDef.restitution=0.1f;
         fixtureDef.shape=shape;
         body.createFixture(fixtureDef);
 
     }
     public void draw(SpriteBatch sb)
     {
-        sb.draw(texture, x,y,width,height);
+        sb.draw(texture, body.getPosition().x,body.getPosition().y,width,height);
     }
     public Body getBody()
     {
