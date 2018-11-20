@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import fr.ul.duckseditor.control.FileChooser;
 import fr.ul.duckseditor.datafactory.TextureFactory;
 
 import javax.swing.*;
@@ -32,6 +33,7 @@ public class Listener implements InputProcessor {
     private Vector2 depart=null;
     private int initAngle;
     private  int btn=-1;
+    private FileChooser fileChooser;
     public Listener(Monde monde)
     {
         this.monde=monde;
@@ -78,19 +80,21 @@ public class Listener implements InputProcessor {
                 o=new Object(monde,TextureFactory.getTargetblue(),v.x,v.y,CARRE_WIDTH,CARRE_WIDTH, BodyDef.BodyType.DynamicBody);
             }else if(body==monde.getLoad().getBody())
             {
-                JFileChooser fileChooser=new JFileChooser();
+               /* JFileChooser fileChooser=new JFileChooser();
                 JFrame frame=new JFrame();
                 frame.setVisible(true);
                 int res=fileChooser.showOpenDialog(frame);
-                frame.dispose();
+                frame.dispose();*/
 
             }else if(body==monde.getSave().getBody())
             {
-                JFileChooser fileChooser=new JFileChooser();
+               /* JFileChooser fileChooser=new JFileChooser();
                 JFrame frame=new JFrame();
                 frame.setVisible(true);
                 int res=fileChooser.showSaveDialog(frame);
-                frame.dispose();
+                frame.dispose();*/
+               
+
 
             }else if(monde.isObjectInSurface(body)) {
                body.setUserData(new Vector2(v.x,v.y));

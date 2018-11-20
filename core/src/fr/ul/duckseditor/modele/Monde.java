@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import fr.ul.duckseditor.control.FileChooser;
 import fr.ul.duckseditor.datafactory.Constant;
 import fr.ul.duckseditor.datafactory.TextureFactory;
 import fr.ul.duckseditor.view.EditorScreen;
@@ -53,6 +54,7 @@ public class Monde {
 
     public Monde(OrthographicCamera camera)
     {
+        FileChooser f=new FileChooser();
         world=new World(new Vector2(0,-10f),true);
         this.camera=camera;
         listener=new Listener(this);

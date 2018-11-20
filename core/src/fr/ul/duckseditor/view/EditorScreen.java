@@ -54,5 +54,8 @@ public class EditorScreen extends ScreenAdapter  {
         super.resize(width, height);
     }
 
-
+    public void save()
+    {
+        System.out.println("sauve");
+    }
 }
