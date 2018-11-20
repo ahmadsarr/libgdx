@@ -9,8 +9,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import fr.ul.duckseditor.datafactory.TextureFactory;
 import fr.ul.duckseditor.modele.Monde;
+import javafx.stage.Stage;
+
+import java.util.ArrayList;
 
 public class EditorScreen extends ScreenAdapter  {
     public static  final int WORLD_WIDTH=800;
@@ -19,31 +23,34 @@ public class EditorScreen extends ScreenAdapter  {
     OrthographicCamera camera;
     private World world;
     private Monde monde;
-
+    private FitViewport vp;
     public EditorScreen() {
         TextureFactory.load();
-        monde=new Monde();
-        camera=new OrthographicCamera();
-        camera.setToOrtho(false,WORLD_WIDTH,WORLD_HEIGTH);
+        camera=new OrthographicCamera(WORLD_WIDTH,WORLD_HEIGTH);
+        monde=new Monde(camera);
+        //camera.setToOrtho(false,);
         sb=new SpriteBatch();
-        sb.setProjectionMatrix(camera.combined);
-
-
 
 
     }
 
     @Override
     public void render(float delta) {
+        camera.position.set(camera.viewportWidth/2f,camera.viewportHeight/2f,0);
+        for(Body body:monde.getToDelete())
+        {
+            world.destroyBody(body);
+        }
+        monde.getToDelete().clear();;
+        monde.setToDelete(new ArrayList<Body>());
+        sb.setProjectionMatrix(camera.combined);
+        camera.update();
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        monde.createGround();
-        monde.getWorld().step(Gdx.graphics.getDeltaTime(),6,2);
+        monde.getWorld().step(Gdx.graphics.getDeltaTime(),6,2);;
         sb.begin();
         sb.draw(TextureFactory.getBackground(),0,0,WORLD_WIDTH,WORLD_HEIGTH);
-        monde.getDuck().draw(sb);
-        monde.getBeam().draw(sb);
-        monde.getPanel().draw(sb);
+        monde.render(delta,sb);
         sb.end();
 
     }

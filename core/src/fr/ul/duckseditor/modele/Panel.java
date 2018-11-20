@@ -1,42 +1,35 @@
 package fr.ul.duckseditor.modele;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import fr.ul.duckseditor.datafactory.Constant;
 import fr.ul.duckseditor.datafactory.TextureFactory;
+import static fr.ul.duckseditor.datafactory.Constant.CARRE_WIDTH;
 
 public class Panel {
+
     private Monde monde;
-    private Texture beam;
-    private Body body;
+    private Texture texture;
+    public final float posX=0;
+    public final float posY=0;
+    public final float width=Constant.WORLD_WIDTH/6;
+    public final float height=Constant.WORLD_HEIGTH;
+
+
     public Panel(Monde monde)
     {
-        this.monde=monde;
-        World world=monde.getWorld();
-        //debugRenderer =new Box2DDebugRenderer();
-        FixtureDef fixtureDef=new FixtureDef();
-        PolygonShape shape=new PolygonShape();
-        BodyDef bodyDef=new BodyDef();
-        beam= TextureFactory.getPanel();
-        bodyDef=new BodyDef();
-        bodyDef.type=BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(beam.getWidth()/2,60+beam.getHeight());
-        body=world.createBody(bodyDef);
-        CircleShape sha=new CircleShape();
-        sha.setRadius(20f);
-
-        fixtureDef=new FixtureDef();
-        fixtureDef.density=10;
-        fixtureDef.shape=sha;
-        body.createFixture(fixtureDef);
-
+        this.texture=TextureFactory.getPanel();
     }
     public void draw(SpriteBatch sb)
     {
-        sb.draw(beam,0,0);
+       sb.draw(texture,0,0,width,height);
+
     }
 
-    public Body getDuckBody() {
-        return body;
-    }
+
 }

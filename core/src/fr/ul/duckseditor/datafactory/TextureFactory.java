@@ -33,7 +33,7 @@ public class TextureFactory {
         panel=new Texture(Gdx.files.internal("data/images/editPanel.png"));
         load=new Texture(Gdx.files.internal("data/images/Load.png"));
         save=new Texture(Gdx.files.internal("data/images/Save.png"));
-        save=new Texture(Gdx.files.internal("data/images/Trash.png"));
+        trash=new Texture(Gdx.files.internal("data/images/Trash.png"));
         stop=new Texture(Gdx.files.internal("data/images/Stop.png"));
         rigth=new Texture(Gdx.files.internal("data/images/rightarrow.png"));
         rewrite=new Texture(Gdx.files.internal("data/images/Rewrite.png"));
