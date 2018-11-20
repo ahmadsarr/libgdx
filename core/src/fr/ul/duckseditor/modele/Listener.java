@@ -1,8 +1,10 @@
 package fr.ul.duckseditor.modele;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -29,7 +31,7 @@ public class Listener implements InputProcessor {
     private Body bodyMoved;
     private Vector2 depart=null;
     private int initAngle;
-     Vector2 pointer;
+    private  int btn=-1;
     public Listener(Monde monde)
     {
         this.monde=monde;
@@ -37,7 +39,7 @@ public class Listener implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if(keycode == Input.Keys.ESCAPE)
-           ;
+           Gdx.app.exit();
         return true;
     }
 
@@ -54,6 +56,7 @@ public class Listener implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 v=monde.getCamera().unproject(new Vector3(screenX,screenY,0));
+        btn=button;
         hasBeenTouch=new ArrayList<Body>();
         monde.getWorld().QueryAABB(new QueryCallback() {
             @Override
@@ -130,21 +133,21 @@ public class Listener implements InputProcessor {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         for (Body bodyMoved:hasBeenTouch) {
             if (bodyMoved .getUserData()!= null) {
-                System.out.println("dragged");
-
-                Vector3 v = monde.getCamera().unproject(new Vector3(screenX, screenY, 0));
+               Vector3 v = monde.getCamera().unproject(new Vector3(screenX, screenY, 0));
                 Vector2 last = (Vector2) bodyMoved.getUserData();
-                float mass = bodyMoved.getMass();
-                float volacity = 1666.67f;
-                float impulse = mass * volacity;
-                Vector2 vector2 = new Vector2(v.x,v.y);
-                vector2.sub(last);
-                vector2.nor();
-                vector2.scl(impulse);
-                //bodyMoved.
 
-              // bodyMoved.applyForceToCenter(vector2,true);
-                last.set(vector2);
+                if(btn==0) {
+                    bodyMoved.setTransform(v.x, v.y, 0);
+                }else {
+                    Vector2 vector2 = new Vector2(v.x, v.y);
+                    bodyMoved.setUserData(vector2);
+                    Vector2 dv=vector2.sub(last);
+                   float angle= bodyMoved.getAngle()* MathUtils.degreesToRadians +dv.angleRad();
+                    bodyMoved.setTransform(bodyMoved.getPosition(),-angle);
+
+
+                }
+
             }
         }
         return true;

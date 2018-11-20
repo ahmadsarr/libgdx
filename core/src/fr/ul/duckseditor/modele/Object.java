@@ -33,7 +33,7 @@ public class Object {
         PolygonShape shape=new PolygonShape();
         shape.setAsBox(width,height);
         fixtureDef=new FixtureDef();
-        fixtureDef.density=0.01f;
+        fixtureDef.density=5f;
         fixtureDef.restitution=0.1f;
         fixtureDef.shape=shape;
         body.createFixture(fixtureDef);
@@ -47,4 +47,5 @@ public class Object {
     {
         return body;
     }
+
 }

@@ -85,7 +85,7 @@ public class Monde {
             @Override
             public void beginContact(Contact contact) {
                 duck.getBody().applyForceToCenter(0,MathUtils.random(20,50),true);
-                System.out.println("ici");
+
                 //duck.getBody().
             }
 
@@ -200,6 +200,14 @@ public class Monde {
     }
     public void render(float delta,SpriteBatch sb)
     {
+        for(Body body:toDelete)
+        {
+           //Object object;
+
+            //world.destroyBody(body);
+
+        }
+        getWorld().step(Gdx.graphics.getDeltaTime(),6,2);;
        panel.draw(sb);
        duck.draw(sb);
 //       cancel.draw(sb);
@@ -249,5 +257,9 @@ public class Monde {
             }
         }
         return false;
+    }
+    public void screenShot()
+    {
+
     }
 }
