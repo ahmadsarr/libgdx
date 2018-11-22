@@ -18,5 +18,7 @@ public class Constant {
     public static final int LANCEUR_Y=WORLD_HEIGTH/6;
     //public static int DUCK_POS_X=
     //public static int DUCK_POS=;
+    public static final int isSave=1;
+    public static final  int isRewrite=2;
 
 }

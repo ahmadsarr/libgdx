@@ -3,6 +3,7 @@ package fr.ul.duckseditor.modele;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -17,25 +18,27 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import fr.ul.duckseditor.control.FileChooser;
 import fr.ul.duckseditor.datafactory.TextureFactory;
+import fr.ul.duckseditor.view.EditorScreen;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.ul.duckseditor.datafactory.Constant.CARRE_WIDTH;
-import static fr.ul.duckseditor.datafactory.Constant.RECTANGLE_HEIGHT;
-import static fr.ul.duckseditor.datafactory.Constant.RECTANGLE_WIDTH;
+import static fr.ul.duckseditor.datafactory.Constant.*;
 
 public class Listener implements InputProcessor {
+    private boolean isPlaying=false;
     Monde monde;
     List<Body> hasBeenTouch=new ArrayList<Body>();
     private Body bodyMoved;
     private Vector2 depart=null;
     private  int btn=-1;
     private FileChooser fileChooser;
-    public Listener(Monde monde)
+    private EditorScreen screen;
+    public Listener(Monde monde,EditorScreen screen)
     {
         this.monde=monde;
+        this.screen=screen;
     }
     @Override
     public boolean keyDown(int keycode) {
@@ -65,7 +68,7 @@ public class Listener implements InputProcessor {
                 hasBeenTouch.add(fixture.getBody());
                 return true;
             }
-        },v.x-0.001f,v.y-0.001f,v.x+0.001f,v.y+0.001f);
+        },v.x-0.00001f,v.y-0.00001f,v.x+0.00001f,v.y+0.00001f);
         for(Body body:hasBeenTouch) {
             Acteur o = null;
             //gerer les clicks sur les boutton;
@@ -75,30 +78,35 @@ public class Listener implements InputProcessor {
                 o =new Rectangulaire(monde, BodyDef.BodyType.DynamicBody,v.x,v.y);
             }else if(body == monde.getBandit().getBody()){
                 o=new Bandit(monde,v.x,v.y);
-                o.getBody().setType(BodyDef.BodyType.DynamicBody);
-            }else if(body==monde.getLoad().getBody())
+            }else if(body == monde.getPrisonnier().getBody()){
+                o=new Prisonnier(monde,v.x,v.y);
+            }else if(body==monde.getRewrite().getBody())
             {
-                JFileChooser fileChooser=new JFileChooser();
-                JFrame frame=new JFrame();
-                frame.setVisible(true);
-                int res=fileChooser.showOpenDialog(frame);
-                frame.dispose();
+                screen.rewrite();
 
             }else if(body==monde.getSave().getBody())
             {
-                JFileChooser fileChooser=new JFileChooser();
-                JFrame frame=new JFrame();
-                frame.setVisible(true);
-                int res=fileChooser.showSaveDialog(frame);
-                frame.dispose();
-            }else if(monde.isActeurInSurface(body)) {
+                screen.save();
+            }else if(body==monde.getPlay().getBody())
+            {
+                isPlaying=!isPlaying;
+                if(isPlaying) {
+                    monde.getWorld().setGravity(new Vector2(0f, -10f));
+                    monde.getPlay().getSprite().setTexture(TextureFactory.getStop());
+                }else
+                {
+                    monde.getWorld().setGravity(new Vector2(0f, 0f));
+                    monde.getPlay().getSprite().setTexture(TextureFactory.getPlay());
+                }
+            }
+            else if(monde.isActeurInSurface(body)) {
                 body.setUserData(new Vector2(v.x,v.y));
             }else
             {
-                System.out.println("pas de body");
+                ;
             }
             if(o!=null)
-                monde.getObjectOnSurface().add(o);
+                monde.getActeurOnSurface().add(o);
         }
         return true;
     }
@@ -113,7 +121,7 @@ public class Listener implements InputProcessor {
                 selectedBody.add(fixture.getBody());
                 return true;
             }
-        },v.x-0.001f,v.y-0.001f,v.x+0.001f,v.y+0.001f);
+        },v.x-0.0001f,v.y-0.0001f,v.x+0.0001f,v.y+0.0001f);
 
         if(selectedBody.contains(monde.getTrash().getBody()))
         {
@@ -130,19 +138,14 @@ public class Listener implements InputProcessor {
             if (bodyMoved .getUserData()!= null) {
                 Vector3 v = monde.getCamera().unproject(new Vector3(screenX, screenY, 0));
                 Vector2 last = (Vector2) bodyMoved.getUserData();
-                System.out.println("last :"+last.toString());
                 if(btn==0) {
                     bodyMoved.setTransform(v.x, v.y, 0);
                 }else {
                     Vector2 vector2 = new Vector2(v.x, v.y);
                     bodyMoved.setUserData(vector2);
-                    Vector2 dv=vector2.sub(last);
-                    System.out.println("New angle :"+dv.angle());
-                    float angle= bodyMoved.getAngle()+dv.angleRad();
-                    System.out.println(angle);
+                    float dv=vector2.angleRad()-last.angleRad();
+                    float angle= bodyMoved.getAngle()+dv;
                     bodyMoved.setTransform(bodyMoved.getPosition(),angle);
-
-
                 }
 
             }
@@ -163,8 +166,12 @@ public class Listener implements InputProcessor {
     public List<Body> getHasBeenTouch() {
         return hasBeenTouch;
     }
-    public class Data
-    {
-        public Vector2 vector2;
+
+    public ScreenAdapter getScreen() {
+        return screen;
+    }
+
+    public void setScreen(EditorScreen screen) {
+        this.screen = screen;
     }
 }

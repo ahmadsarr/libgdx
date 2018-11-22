@@ -1,5 +1,6 @@
 package fr.ul.duckseditor.modele;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -13,7 +14,7 @@ public class Bandit extends Acteur {
         super(PERSONNAGE_RAYON,PERSONNAGE_RAYON, monde);
         BodyDef bodyDef=new BodyDef();
         bodyDef.position.set(x,y);
-        bodyDef.type= BodyDef.BodyType.StaticBody;
+        bodyDef.type= BodyDef.BodyType.DynamicBody;
         this.body=monde.getWorld().createBody(bodyDef);
         CircleShape shape=new CircleShape();
         shape.setRadius(PERSONNAGE_RAYON);
@@ -23,6 +24,7 @@ public class Bandit extends Acteur {
         fixtureDef.restitution=0.1f;
         body.createFixture(fixtureDef);
         shape.dispose();
+        this.type=getClass().toString();
     }
 
     @Override

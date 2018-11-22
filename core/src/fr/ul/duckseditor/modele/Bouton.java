@@ -1,5 +1,6 @@
 package fr.ul.duckseditor.modele;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -11,10 +12,12 @@ import fr.ul.duckseditor.modele.Monde;
 import static fr.ul.duckseditor.datafactory.Constant.*;
 public class Bouton extends Acteur {
     private Texture texture;
-    public Bouton (Monde monde, int x, int y) {
+    public Bouton (Monde monde, float x, float y) {
         super(TRASH_WIDTH, TRASH_HEIGHT, monde);
         BodyDef bodyDef=new BodyDef();
         bodyDef.position.set(x,y);
+        this.x=x;
+        this.y=y;
         bodyDef.type= BodyDef.BodyType.StaticBody;
         this.body=monde.getWorld().createBody(bodyDef);
         PolygonShape shape=new PolygonShape();
@@ -27,16 +30,16 @@ public class Bouton extends Acteur {
         shape.dispose();
     }
 
-    public Texture getTexture() {
-        return texture;
-    }
 
     public void setTexture(Texture texture) {
-        this.texture = texture;
+       // this.texture = texture;
+        sprite=new Sprite(texture);
+        sprite.setSize(getLargeur(),getHauteur());
+        sprite.setPosition(x,y);
     }
 
     @Override
     void draw(SpriteBatch sb) {
-        sb.draw(texture,body.getPosition().x,body.getPosition().y,getLargeur(),getHauteur());
+       sprite.draw(sb);
     }
 }

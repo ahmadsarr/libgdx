@@ -23,7 +23,6 @@ public class Duck {
        duckBody=monde.getWorld().createBody(bodyDef);
        CircleShape sha=new CircleShape();
        sha.setRadius(Constant.DUCK_WIDTH/2);
-
        fixtureDef=new FixtureDef();
        fixtureDef.density=0.1f;
        fixtureDef.restitution=0.5f;

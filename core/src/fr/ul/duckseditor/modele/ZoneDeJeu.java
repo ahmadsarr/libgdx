@@ -16,12 +16,12 @@ public class ZoneDeJeu extends Acteur {
         this.body=monde.getWorld().createBody(bodyDef);
         PolygonShape shape=new PolygonShape();
        float[] points={0,WORLD_HEIGTH/6,0,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH/6};
-       shape.set(points);
-        shape.setAsBox(WORLD_WIDTH-10,WORLD_HEIGTH/6);
+       // shape.set(points);
+        shape.setAsBox(WORLD_WIDTH,WORLD_HEIGTH/(6*2)+3);
         FixtureDef fixtureDef=new FixtureDef();
-        fixtureDef.density=25;
+        fixtureDef.density=1200;
         fixtureDef.shape=shape;
-        fixtureDef.restitution=0.1f;
+       fixtureDef.restitution=0.1f;
         body.createFixture(fixtureDef);
         shape.dispose();
     }

@@ -9,7 +9,7 @@ import fr.ul.duckseditor.datafactory.TextureFactory;
 
 import static fr.ul.duckseditor.datafactory.Constant.*;
 public class Prisonnier extends Acteur {
-    public Prisonnier(Monde monde,int x,int y) {
+    public Prisonnier(Monde monde,float x,float y) {
         super(PERSONNAGE_RAYON,PERSONNAGE_RAYON, monde);
         BodyDef bodyDef=new BodyDef();
         bodyDef.position.set(x,y);
@@ -23,6 +23,7 @@ public class Prisonnier extends Acteur {
         fixtureDef.restitution=0.1f;
         body.createFixture(fixtureDef);
         shape.dispose();
+        this.type=getClass().toString();
     }
 
     @Override

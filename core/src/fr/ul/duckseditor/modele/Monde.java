@@ -3,14 +3,17 @@ package fr.ul.duckseditor.modele;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ScreenUtils;
 import fr.ul.duckseditor.control.FileChooser;
 import fr.ul.duckseditor.datafactory.Constant;
 import fr.ul.duckseditor.datafactory.TextureFactory;
@@ -48,7 +51,7 @@ public class Monde {
     private Panel panel;
 
     private OrthographicCamera camera;
-    private Listener listener;
+
     private List<Acteur> objectOnSurface=new ArrayList<Acteur>();
     private  List<Acteur>btns=new ArrayList<Acteur>();
     private List<Body> toDelete=new ArrayList<Body>();
@@ -57,39 +60,9 @@ public class Monde {
     {
         FileChooser f=new FileChooser();
         world=new World(new Vector2(0,0f),true);
-        this.camera=camera;
-        listener=new Listener(this);
-        //border();
-        zoneDeJeu=new ZoneDeJeu(this);
-        panel=new Panel(this);
-        trash=new Bouton(this,panel.posX,panel.posY);
-        ((Bouton) trash).setTexture(TextureFactory.getTrash());
-        btns.add(trash);
-        bandit=new Bandit(this,(int)(trash.getX()),(int) (trash.getHauteur()+trash.getY()+1));
-        btns.add(bandit);
-        prisonnier=new Prisonnier(this,(int)(bandit.getX()),(int) (bandit.getHauteur()+bandit.getY()+1));
-        btns.add(prisonnier);
-        carre=new Carre(this, BodyDef.BodyType.StaticBody,(int)(bandit.getX()+1),(int) (prisonnier.getHauteur()+prisonnier.getY()+1));
-        btns.add(carre);
-        rectangle=new Rectangulaire(this, BodyDef.BodyType.StaticBody,(int)(carre.getX()),(int) (carre.getHauteur()+carre.getY()+1));
-        btns.add(rectangle);
-        load=new Bouton(this,0,(int)(rectangle.getHauteur()+rectangle.getY()+3));
-        ((Bouton) load).setTexture(TextureFactory.getLoad());
-        btns.add(load);
-        save=new Bouton(this,(int)(load.getX()+load.getLargeur()+1),(int)(load.getY()));
-        ((Bouton) save).setTexture(TextureFactory.getSave());
-         btns.add(save);
-        rewrite=new Bouton(this,(int)(carre.getX()),(int)(save.getY()+save.getHauteur()));
-        ((Bouton) rewrite).setTexture(TextureFactory.getRewrite());
-        btns.add(rewrite);
-        play=new Bouton(this,(int)(carre.getX()),(int)(rewrite.getY()+rewrite.getHauteur()+5));
-        ((Bouton) play).setTexture(TextureFactory.getPlay());
-        btns.add(play);
-        Gdx.input.setInputProcessor(listener);
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
-                //duck.getBody().
             }
 
             @Override
@@ -107,6 +80,36 @@ public class Monde {
 
             }
         });
+        this.camera=camera;
+        heros=new Heros(this,WORLD_WIDTH/2,WORLD_HEIGTH/2);
+        //border();
+        zoneDeJeu=new ZoneDeJeu(this);
+        panel=new Panel(this);
+        trash=new Bouton(this,panel.posX,panel.posY);
+        ((Bouton) trash).setTexture(TextureFactory.getTrash());
+        btns.add(trash);
+        bandit=new Bandit(this,(int)(trash.getX()),(int) (trash.getHauteur()+trash.getY()+1));
+        bandit.getBody().setType(BodyDef.BodyType.StaticBody);
+        btns.add(bandit);
+        prisonnier=new Prisonnier(this,(int)(bandit.getX()),(int) (bandit.getHauteur()+bandit.getY()+1));
+        prisonnier.getBody().setType(BodyDef.BodyType.StaticBody);
+        btns.add(prisonnier);
+        carre=new Carre(this, BodyDef.BodyType.StaticBody,(int)(bandit.getX()+1),(int) (prisonnier.getHauteur()+prisonnier.getY()+1));
+        btns.add(carre);
+        rectangle=new Rectangulaire(this, BodyDef.BodyType.StaticBody,(int)(carre.getX()),(int) (carre.getHauteur()+carre.getY()+1));
+        btns.add(rectangle);
+        load=new Bouton(this,0,(int)(rectangle.getHauteur()+rectangle.getY()+3));
+        ((Bouton) load).setTexture(TextureFactory.getLoad());
+        btns.add(load);
+        save=new Bouton(this,(int)(load.getX()+load.getLargeur()+2),(int)(load.getY()));
+        ((Bouton) save).setTexture(TextureFactory.getSave());
+         btns.add(save);
+        rewrite=new Bouton(this,(int)(carre.getX()+1),(int)(save.getY()+save.getHauteur()+3));
+        ((Bouton) rewrite).setTexture(TextureFactory.getRewrite());
+        btns.add(rewrite);
+        play=new Bouton(this,(int)(carre.getX()),(int)(rewrite.getY()+rewrite.getHauteur()+5));
+        ((Bouton) play).setTexture(TextureFactory.getPlay());
+        btns.add(play);
     }
 
     public World getWorld() {
@@ -138,9 +141,6 @@ public class Monde {
     }
     public Acteur getRigth() {
         return rigth;
-    }
-    public Listener getListener() {
-        return listener;
     }
     public List<Acteur> getActeurOnSurface() {
         return objectOnSurface;
@@ -180,6 +180,7 @@ public class Monde {
     }
     public void render(float delta, SpriteBatch sb)
     {
+        heros.draw(sb);
         for(Body body:toDelete)
         {
             Acteur act=null;
@@ -206,6 +207,7 @@ public class Monde {
     public void draw(SpriteBatch sb)
     {
         panel.draw(sb);
+
         for(Acteur acteur:btns)
         {
             acteur.draw(sb);
@@ -240,8 +242,28 @@ public class Monde {
         }
         return false;
     }
-    public void screenShot()
-    {
 
+    public Pixmap screenShot()
+    {
+        System.out.println(Gdx.graphics.getWidth());
+        System.out.println(Gdx.graphics.getHeight());
+        Pixmap pixmap= ScreenUtils.getFrameBufferPixmap(Gdx.graphics.getWidth()/5,0,Gdx.graphics.getWidth()*4/5,Gdx.graphics.getHeight());
+        return pixmap;
     }
+    public void save(String filename)
+    {
+        PixmapIO.writePNG(Gdx.files.absolute( filename+".png"),screenShot());
+        FileHandle fileHandle=Gdx.files.absolute( filename+".mdl");
+        fileHandle.writeString(savePos(),false);
+    }
+    public String savePos()
+    {
+        Json json=new Json();
+        String strJson="";
+        for(Acteur acteur:getActeurOnSurface())
+          strJson+=json.toJson(acteur,Acteur.class);
+        return  strJson;
+    }
+
+
 }
