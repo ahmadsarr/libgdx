@@ -9,8 +9,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 //		TextureFactory.load();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width=800;
-		config.height=480;
+		config.width=1240;
+		config.height=800;
 		config.a=8;
 		new LwjglApplication(new DucksEditor(), config);
 	}
