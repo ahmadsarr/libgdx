@@ -16,6 +16,7 @@ import fr.ul.duckseditor.datafactory.Constant;
 import fr.ul.duckseditor.datafactory.TextureFactory;
 import fr.ul.duckseditor.view.EditorScreen;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,71 +24,71 @@ import static fr.ul.duckseditor.datafactory.Constant.*;
 
 public class Monde {
     private World world;
-    private Duck duck;
-    private Body groundBody;
+    private Heros heros;
+    //private Body groundBody;
+    private ZoneDeJeu zoneDeJeu;
 
-    private Object carre;
-    private Object rectangle;
+    private Acteur prisonnier;
+    private Acteur bandit;
 
-    private Object targetBeige;
-    private Object targetBleu;
+    private Acteur play;
+    private Acteur stop;
 
-    private Object play;
-    private Object stop;
+    private Acteur trash;
 
-    private  Object cancel;
-    private  Object supprimer;
-    private  Object trash;
+    private Acteur carre;
+    private Acteur rectangle;
 
-    private  Object save;
-    private  Object load;
-    private  Object rewrite;
+    private  Acteur save;
+    private  Acteur load;
+    private  Acteur rewrite;
 
-    private Object left;
-    private Object rigth;
+    private Acteur left;
+    private Acteur rigth;
     private Panel panel;
 
     private OrthographicCamera camera;
     private Listener listener;
-    private List<Object> objectOnSurface=new ArrayList<Object>();
+    private List<Acteur> objectOnSurface=new ArrayList<Acteur>();
+    private  List<Acteur>btns=new ArrayList<Acteur>();
     private List<Body> toDelete=new ArrayList<Body>();
 
     public Monde(OrthographicCamera camera)
     {
         FileChooser f=new FileChooser();
-        world=new World(new Vector2(0,-10f),true);
+        world=new World(new Vector2(0,0f),true);
         this.camera=camera;
         listener=new Listener(this);
-        duck=new Duck(this);
-        border();
+        //border();
+        zoneDeJeu=new ZoneDeJeu(this);
         panel=new Panel(this);
-        carre=new Object(this,TextureFactory.getBlock(),0,0,CARRE_WIDTH,CARRE_WIDTH, BodyDef.BodyType.StaticBody);
-        rectangle=new Object(this,TextureFactory.getBeam(),carre.width+10,carre.y,RECTANGLE_WIDTH,RECTANGLE_HEIGHT, BodyDef.BodyType.StaticBody);
-
-        targetBeige=new Object(this,TextureFactory.getTargetbeige(),carre.x,rectangle.height+rectangle.y+10,CARRE_WIDTH,CARRE_WIDTH, BodyDef.BodyType.StaticBody);
-        targetBleu=new Object(this,TextureFactory.getTargetblue(),targetBeige.x+targetBeige.width+10,rectangle.height+rectangle.y+10,CARRE_WIDTH,CARRE_WIDTH, BodyDef.BodyType.StaticBody);
-
-        play=new Object(this,TextureFactory.getPlay(),0,targetBeige.height+targetBeige.y+40,CARRE_WIDTH/2,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
-        stop=new Object(this,TextureFactory.getStop(),play.x+targetBeige.width+10,play.y,CARRE_WIDTH/2,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
-        trash=new Object(this,TextureFactory.getTrash(),panel.width/4,stop.height+stop.y+10,CARRE_WIDTH/2,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
-
-        load=new Object(this,TextureFactory.getLoad(),0,trash.height+trash.y+40,CARRE_WIDTH/2,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
-        rewrite=new Object(this,TextureFactory.getRewrite(),play.x+targetBeige.width+10,load.y,CARRE_WIDTH/2,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
-        save=new Object(this,TextureFactory.getSave(),panel.width/4,rewrite.height+rewrite.y+10,CARRE_WIDTH/2,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
-
-        left=new Object(this,TextureFactory.getLeft(),0,panel.height-50,CARRE_WIDTH,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
-        rigth=new Object(this,TextureFactory.getRigth(),left.width+10,panel.height-50,CARRE_WIDTH,CARRE_WIDTH/2, BodyDef.BodyType.StaticBody);
-
-
-
-        float posX=panel.width/2;
-        float posY=panel.height-TextureFactory.getCancel().getWidth();
+        trash=new Bouton(this,panel.posX,panel.posY);
+        ((Bouton) trash).setTexture(TextureFactory.getTrash());
+        btns.add(trash);
+        bandit=new Bandit(this,(int)(trash.getX()),(int) (trash.getHauteur()+trash.getY()+1));
+        btns.add(bandit);
+        prisonnier=new Prisonnier(this,(int)(bandit.getX()),(int) (bandit.getHauteur()+bandit.getY()+1));
+        btns.add(prisonnier);
+        carre=new Carre(this, BodyDef.BodyType.StaticBody,(int)(bandit.getX()+1),(int) (prisonnier.getHauteur()+prisonnier.getY()+1));
+        btns.add(carre);
+        rectangle=new Rectangulaire(this, BodyDef.BodyType.StaticBody,(int)(carre.getX()),(int) (carre.getHauteur()+carre.getY()+1));
+        btns.add(rectangle);
+        load=new Bouton(this,0,(int)(rectangle.getHauteur()+rectangle.getY()+3));
+        ((Bouton) load).setTexture(TextureFactory.getLoad());
+        btns.add(load);
+        save=new Bouton(this,(int)(load.getX()+load.getLargeur()+1),(int)(load.getY()));
+        ((Bouton) save).setTexture(TextureFactory.getSave());
+         btns.add(save);
+        rewrite=new Bouton(this,(int)(carre.getX()),(int)(save.getY()+save.getHauteur()));
+        ((Bouton) rewrite).setTexture(TextureFactory.getRewrite());
+        btns.add(rewrite);
+        play=new Bouton(this,(int)(carre.getX()),(int)(rewrite.getY()+rewrite.getHauteur()+5));
+        ((Bouton) play).setTexture(TextureFactory.getPlay());
+        btns.add(play);
         Gdx.input.setInputProcessor(listener);
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
-                duck.getBody().applyForceToCenter(0,MathUtils.random(20,50),true);
-
                 //duck.getBody().
             }
 
@@ -106,152 +107,131 @@ public class Monde {
 
             }
         });
-
     }
 
     public World getWorld() {
         return world;
     }
-
-    public Duck getDuck() {
-        return duck;
-    }
-
-    public Object getCarre() {
-        return carre;
-    }
-
-    public Object getRectangle() {
-        return rectangle;
-    }
-
-    public Body getGroundBody() {
-        return groundBody;
-    }
-
     public OrthographicCamera getCamera() {
         return camera;
     }
-
-    public Object getTargetBeige() {
-        return targetBeige;
-    }
-
-    public Object getTargetBleu() {
-        return targetBleu;
-    }
-
-    public Object getPlay() {
+    public Acteur getPlay() {
         return play;
     }
-
-    public Object getStop() {
+    public Acteur getStop() {
         return stop;
     }
-
-    public Object getCancel() {
-        return cancel;
-    }
-
-    public Object getSupprimer() {
-        return supprimer;
-    }
-
-    public Object getTrash() {
+    public Acteur getTrash() {
         return trash;
     }
-
-    public Object getSave() {
+    public Acteur getSave() {
         return save;
     }
-
-    public Object getLoad() {
+    public Acteur getLoad() {
         return load;
     }
-
-    public Object getRewrite() {
+    public Acteur getRewrite() {
         return rewrite;
     }
-
-    public Object getLeft() {
+    public Acteur getLeft() {
         return left;
     }
-
-    public Object getRigth() {
+    public Acteur getRigth() {
         return rigth;
     }
-
     public Listener getListener() {
         return listener;
     }
-
-    public List<Object> getObjectOnSurface() {
+    public List<Acteur> getActeurOnSurface() {
         return objectOnSurface;
     }
-
     public List<Body> getToDelete() {
         return toDelete;
     }
-
     public void setToDelete(List<Body> toDelete) {
         this.toDelete = toDelete;
     }
-
     public Panel getPanel() {
         return panel;
     }
-    public void render(float delta,SpriteBatch sb)
+    public Heros getHeros() {
+        return heros;
+    }
+    public ZoneDeJeu getZoneDeJeu() {
+        return zoneDeJeu;
+    }
+    public Acteur getPrisonnier() {
+        return prisonnier;
+    }
+    public Acteur getBandit() {
+        return bandit;
+    }
+    public Acteur getCarre() {
+        return carre;
+    }
+    public Acteur getRectangle() {
+        return rectangle;
+    }
+    public List<Acteur> getObjectOnSurface() {
+        return objectOnSurface;
+    }
+    public List<Acteur> getBtns() {
+        return btns;
+    }
+    public void render(float delta, SpriteBatch sb)
     {
         for(Body body:toDelete)
         {
-           //Object object;
-
-            //world.destroyBody(body);
-
+            Acteur act=null;
+            for(Acteur acteur:getActeurOnSurface())
+            {
+                if(acteur.getBody()==body)
+                {
+                    act=acteur;
+                    world.destroyBody(body);//destruction de body
+                }
+            }
+            if(act!=null) {
+                getObjectOnSurface().remove(act);//l'enlever des objet a afficher
+            }
         }
         getWorld().step(Gdx.graphics.getDeltaTime(),6,2);;
-       panel.draw(sb);
-       duck.draw(sb);
-//       cancel.draw(sb);
-       carre.draw(sb);
-       rectangle.draw(sb);
-       targetBeige.draw(sb);
-       targetBleu.draw(sb);
-       play.draw(sb);
-       stop.draw(sb);
-       trash.draw(sb);
-       save.draw(sb);
-       load.draw(sb);
-       rewrite.draw(sb);
-       left.draw(sb);
-       rigth.draw(sb);
-       for(Object o:objectOnSurface)
+         draw(sb);
+       for(Acteur o:objectOnSurface)
        {
            o.draw(sb);
        }
 
     }
+    public void draw(SpriteBatch sb)
+    {
+        panel.draw(sb);
+        for(Acteur acteur:btns)
+        {
+            acteur.draw(sb);
+        }
+    }
 
-    public void border()
+    /*public void border()
     {
 
         BodyDef bodyDef=new BodyDef();
         bodyDef.type=BodyDef.BodyType.StaticBody;
         bodyDef.position.set(0, Constant.WORLD_HEIGTH/6);
         PolygonShape shape=new PolygonShape();
-        float[] points={0,WORLD_HEIGTH/6,0,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH/6};
-        shape.set(points);
-        shape.setAsBox(WORLD_WIDTH,6);
+        //float[] points={0,WORLD_HEIGTH/6,0,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH/6};
+        //shape.set(points);
+        shape.setAsBox(WORLD_WIDTH,WORLD_HEIGTH);
         groundBody=world.createBody(bodyDef);
         FixtureDef fixtureDef=new FixtureDef();
         fixtureDef.density=0;
         fixtureDef.shape=shape;
         groundBody.createFixture(fixtureDef);
         shape.dispose();
-    }
-    public boolean isObjectInSurface(Body body)
+    }*/
+    public boolean isActeurInSurface(Body body)
     {
-        for(Object object:objectOnSurface)
+        for(Acteur object:objectOnSurface)
         {
             if(body==object.getBody())
             {

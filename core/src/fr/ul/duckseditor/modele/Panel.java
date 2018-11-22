@@ -15,9 +15,9 @@ public class Panel {
 
     private Monde monde;
     private Texture texture;
-    public final float posX=0;
-    public final float posY=0;
-    public final float width=Constant.WORLD_WIDTH/6;
+    public final int posX=0;
+    public final int posY=0;
+    public final float width=Constant.WORLD_WIDTH/9;
     public final float height=Constant.WORLD_HEIGTH;
 
 

@@ -8,17 +8,17 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import fr.ul.duckseditor.datafactory.TextureFactory;
 
 import static fr.ul.duckseditor.datafactory.Constant.*;
-public class Trash extends Acteur {
-    public Trash (Monde monde,int x,int y) {
-        super(CARRE_WIDTH, CARRE_WIDTH, monde);
+public class Bandit extends Acteur {
+    public Bandit(Monde monde,float x,float y) {
+        super(PERSONNAGE_RAYON,PERSONNAGE_RAYON, monde);
         BodyDef bodyDef=new BodyDef();
         bodyDef.position.set(x,y);
         bodyDef.type= BodyDef.BodyType.StaticBody;
         this.body=monde.getWorld().createBody(bodyDef);
-        PolygonShape shape=new PolygonShape();
-        shape.setAsBox(RECTANGLE_WIDTH,RECTANGLE_HEIGHT);
+        CircleShape shape=new CircleShape();
+        shape.setRadius(PERSONNAGE_RAYON);
         FixtureDef fixtureDef=new FixtureDef();
-        fixtureDef.density=0f;
+        fixtureDef.density=0.2f;
         fixtureDef.shape=shape;
         fixtureDef.restitution=0.1f;
         body.createFixture(fixtureDef);
@@ -27,6 +27,6 @@ public class Trash extends Acteur {
 
     @Override
     void draw(SpriteBatch sb) {
-        sb.draw(TextureFactory.getBlock(),body.getPosition().x,body.getPosition().y,RECTANGLE_WIDTH,RECTANGLE_HEIGHT);
+        sb.draw(TextureFactory.getTargetbeige(),body.getPosition().x,body.getPosition().y,PERSONNAGE_RAYON,PERSONNAGE_RAYON);
     }
 }

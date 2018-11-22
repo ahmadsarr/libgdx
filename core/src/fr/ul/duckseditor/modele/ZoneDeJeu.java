@@ -15,22 +15,20 @@ public class ZoneDeJeu extends Acteur {
         bodyDef.type= BodyDef.BodyType.StaticBody;
         this.body=monde.getWorld().createBody(bodyDef);
         PolygonShape shape=new PolygonShape();
-        shape.setAsBox(WORLD_WIDTH,WORLD_HEIGTH);
+       float[] points={0,WORLD_HEIGTH/6,0,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH/6};
+       shape.set(points);
+        shape.setAsBox(WORLD_WIDTH-10,WORLD_HEIGTH/6);
         FixtureDef fixtureDef=new FixtureDef();
         fixtureDef.density=25;
         fixtureDef.shape=shape;
         fixtureDef.restitution=0.1f;
         body.createFixture(fixtureDef);
         shape.dispose();
-        ChainShape chainShape=new ChainShape();
-        chainShape.createChain(new Vector2[]{new Vector2(0,WORLD_HEIGTH/6),new Vector2(WORLD_WIDTH,WORLD_HEIGTH/6)});
-        body.createFixture(chainShape,0f);
-        chainShape.dispose();
     }
 
     @Override
     void draw(SpriteBatch sb) {
-        sb.draw(TextureFactory.getBackground(),0,0,WORLD_WIDTH,WORLD_HEIGTH);
+
     }
 
 }

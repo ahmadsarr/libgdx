@@ -31,7 +31,6 @@ public class Listener implements InputProcessor {
     List<Body> hasBeenTouch=new ArrayList<Body>();
     private Body bodyMoved;
     private Vector2 depart=null;
-    private int initAngle;
     private  int btn=-1;
     private FileChooser fileChooser;
     public Listener(Monde monde)
@@ -66,88 +65,82 @@ public class Listener implements InputProcessor {
                 hasBeenTouch.add(fixture.getBody());
                 return true;
             }
-        },v.x-3,v.y-6,v.x+3,v.y+6);
+        },v.x-0.001f,v.y-0.001f,v.x+0.001f,v.y+0.001f);
         for(Body body:hasBeenTouch) {
-            Object o = null;
+            Acteur o = null;
+            //gerer les clicks sur les boutton;
             if (body == monde.getCarre().getBody()) {
-                o = new Object(monde, TextureFactory.getBlock(), v.x, v.y, CARRE_WIDTH, CARRE_WIDTH, BodyDef.BodyType.DynamicBody);
+                o =new Carre(monde, BodyDef.BodyType.DynamicBody,v.x,v.y);
             } else if (body == monde.getRectangle().getBody()) {
-                o = new Object(monde, TextureFactory.getBeam(), v.x, v.y, RECTANGLE_WIDTH, RECTANGLE_HEIGHT, BodyDef.BodyType.DynamicBody);
-            } else if (body == monde.getTargetBeige().getBody()) {
-                o = new Object(monde, TextureFactory.getTargetbeige(), v.x, v.y, CARRE_WIDTH, CARRE_WIDTH, BodyDef.BodyType.DynamicBody);
-
-            }else if(body == monde.getTargetBleu().getBody()){
-                o=new Object(monde,TextureFactory.getTargetblue(),v.x,v.y,CARRE_WIDTH,CARRE_WIDTH, BodyDef.BodyType.DynamicBody);
+                o =new Rectangulaire(monde, BodyDef.BodyType.DynamicBody,v.x,v.y);
+            }else if(body == monde.getBandit().getBody()){
+                o=new Bandit(monde,v.x,v.y);
+                o.getBody().setType(BodyDef.BodyType.DynamicBody);
             }else if(body==monde.getLoad().getBody())
             {
-               /* JFileChooser fileChooser=new JFileChooser();
+                JFileChooser fileChooser=new JFileChooser();
                 JFrame frame=new JFrame();
                 frame.setVisible(true);
                 int res=fileChooser.showOpenDialog(frame);
-                frame.dispose();*/
+                frame.dispose();
 
             }else if(body==monde.getSave().getBody())
             {
-               /* JFileChooser fileChooser=new JFileChooser();
+                JFileChooser fileChooser=new JFileChooser();
                 JFrame frame=new JFrame();
                 frame.setVisible(true);
                 int res=fileChooser.showSaveDialog(frame);
-                frame.dispose();*/
-               
-
-
-            }else if(monde.isObjectInSurface(body)) {
-               body.setUserData(new Vector2(v.x,v.y));
-
+                frame.dispose();
+            }else if(monde.isActeurInSurface(body)) {
+                body.setUserData(new Vector2(v.x,v.y));
             }else
             {
                 System.out.println("pas de body");
             }
             if(o!=null)
-            monde.getObjectOnSurface().add(o);
+                monde.getObjectOnSurface().add(o);
         }
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        Vector3 vector3=monde.getCamera().unproject(new Vector3(screenX,screenY,0));
-
-        final List<Body> bodies=new ArrayList<Body>();
+        Vector3 v=monde.getCamera().unproject(new Vector3(screenX,screenY,0));
+        final List<Body> selectedBody=new ArrayList<Body>();
         monde.getWorld().QueryAABB(new QueryCallback() {
             @Override
             public boolean reportFixture(Fixture fixture) {
-                bodies.add(fixture.getBody());
+                selectedBody.add(fixture.getBody());
                 return true;
             }
-        },vector3.x-0.001f,vector3.y-0.001f,vector3.x+0.001f,vector3.y+0.001f);
-        for(Body body:hasBeenTouch)
-        {
-            body.setUserData(null);
-        }
-        if(bodies.contains(monde.getSupprimer()))
+        },v.x-0.001f,v.y-0.001f,v.x+0.001f,v.y+0.001f);
+
+        if(selectedBody.contains(monde.getTrash().getBody()))
         {
             monde.setToDelete(hasBeenTouch);
         }
 
         return true;
+
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         for (Body bodyMoved:hasBeenTouch) {
             if (bodyMoved .getUserData()!= null) {
-               Vector3 v = monde.getCamera().unproject(new Vector3(screenX, screenY, 0));
+                Vector3 v = monde.getCamera().unproject(new Vector3(screenX, screenY, 0));
                 Vector2 last = (Vector2) bodyMoved.getUserData();
-
+                System.out.println("last :"+last.toString());
                 if(btn==0) {
                     bodyMoved.setTransform(v.x, v.y, 0);
                 }else {
                     Vector2 vector2 = new Vector2(v.x, v.y);
                     bodyMoved.setUserData(vector2);
                     Vector2 dv=vector2.sub(last);
-                   float angle= bodyMoved.getAngle()* MathUtils.degreesToRadians +dv.angleRad();
-                    bodyMoved.setTransform(bodyMoved.getPosition(),-angle);
+                    System.out.println("New angle :"+dv.angle());
+                    float angle= bodyMoved.getAngle()+dv.angleRad();
+                    System.out.println(angle);
+                    bodyMoved.setTransform(bodyMoved.getPosition(),angle);
 
 
                 }

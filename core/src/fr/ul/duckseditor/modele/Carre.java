@@ -9,7 +9,7 @@ import fr.ul.duckseditor.datafactory.TextureFactory;
 
 import static fr.ul.duckseditor.datafactory.Constant.*;
 public class Carre extends Acteur {
-    public Carre(Monde monde, BodyDef.BodyType type,int x,int y) {
+    public Carre(Monde monde, BodyDef.BodyType type,float x,float y) {
         super(CARRE_WIDTH, CARRE_WIDTH, monde);
         BodyDef bodyDef=new BodyDef();
         bodyDef.position.set(x,y);
