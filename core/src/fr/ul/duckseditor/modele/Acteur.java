@@ -6,7 +6,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
-abstract class Acteur implements Json.Serializable {
+public abstract class Acteur  {
     protected float largeur;
     protected float hauteur;
     protected Monde monde;
@@ -84,23 +84,6 @@ abstract class Acteur implements Json.Serializable {
     public void setType(String type) {
         this.type = type;
     }
-    public float getAngle()
-    {
-        return body.getAngle();
-    }
-    @Override
-    public void write(Json json) {
-        json.writeObjectStart("coord");
 
-        json.writeValue("x",getX());
-        json.writeValue("y",getY());
-        json.writeValue("angle",getAngle());
-        json.writeObjectEnd();
-    }
-
-    @Override
-    public void read(Json json, JsonValue jsonData) {
-        Acteur acteur;
-    }
 
 }

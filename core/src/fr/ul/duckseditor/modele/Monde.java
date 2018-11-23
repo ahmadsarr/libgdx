@@ -58,11 +58,11 @@ public class Monde {
 
     public Monde(OrthographicCamera camera)
     {
-        FileChooser f=new FileChooser();
         world=new World(new Vector2(0,0f),true);
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
+
             }
 
             @Override
@@ -201,6 +201,7 @@ public class Monde {
        for(Acteur o:objectOnSurface)
        {
            o.draw(sb);
+
        }
 
     }
@@ -245,9 +246,14 @@ public class Monde {
 
     public Pixmap screenShot()
     {
-        System.out.println(Gdx.graphics.getWidth());
-        System.out.println(Gdx.graphics.getHeight());
-        Pixmap pixmap= ScreenUtils.getFrameBufferPixmap(Gdx.graphics.getWidth()/5,0,Gdx.graphics.getWidth()*4/5,Gdx.graphics.getHeight());
+        byte[] pixels= ScreenUtils.getFrameBufferPixels(Gdx.graphics.getWidth()/5,0,Gdx.graphics.getWidth()*4/5,Gdx.graphics.getHeight(),true);
+        for(int i = 4; i < pixels.length; i += 4) {
+            pixels[i - 1] = (byte) 255;
+        }
+
+        Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth()*4/5, Gdx.graphics.getHeight(), Pixmap.Format.RGBA8888);
+        BufferUtils.copy(pixels, 0, pixmap.getPixels(), pixels.length);
+
         return pixmap;
     }
     public void save(String filename)
@@ -260,10 +266,36 @@ public class Monde {
     {
         Json json=new Json();
         String strJson="";
-        for(Acteur acteur:getActeurOnSurface())
-          strJson+=json.toJson(acteur,Acteur.class);
+        for(Acteur acteur:getActeurOnSurface()) {
+            strJson += acteur.getType() + ";" + acteur.getBody().getPosition().x + ";" + acteur.getBody().getPosition().y + ";" + acteur.largeur + ";" + acteur.hauteur + "\n";
+        }
         return  strJson;
     }
+    public void load(String filename)
+    {
+        String[] str=Gdx.files.absolute(filename).readString().split("\n");
+        objectOnSurface=new ArrayList<Acteur>();
+        for(String line:str)
+        {
+            String[] att=line.split(";");
+            if(att.length!=5)
+                continue;
+            String className=att[0];
+            float x=Float.parseFloat(att[1]);
+            float y=Float.parseFloat(att[2]);
+            Acteur o=null;
+            if (className.trim().compareToIgnoreCase(Carre.class.toString())==0) {
+                o =new Carre(this, BodyDef.BodyType.DynamicBody,x,y);
 
+            } else if (className.trim().compareToIgnoreCase(Rectangulaire.class.toString())==0) {
+                o =new Rectangulaire(this, BodyDef.BodyType.DynamicBody,x,y);
+            }else if(className.trim().compareToIgnoreCase(Bandit.class.toString())==0){
+                o=new Bandit(this,x,y);
+            }else if(className.trim().compareToIgnoreCase(Prisonnier.class.toString())==0){
+                o=new Prisonnier(this,x,y);
+            }
+            objectOnSurface.add(o);
+        }
+    }
 
 }

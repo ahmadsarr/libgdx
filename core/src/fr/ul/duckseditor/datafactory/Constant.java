@@ -19,6 +19,12 @@ public class Constant {
     //public static int DUCK_POS_X=
     //public static int DUCK_POS=;
     public static final int isSave=1;
-    public static final  int isRewrite=2;
+    public static final  float LEFT_X=1;
+    public static final  float LEFT_Y=WORLD_HEIGTH/2;
+    public static final  float RIGHT_X=WORLD_WIDTH-TRASH_WIDTH;
+    public static final  float RIGHT_Y=WORLD_HEIGTH/2;
+    public static final  float CANCEL_X=WORLD_WIDTH/2;
+    public static final  float CANCEL_Y=WORLD_HEIGTH/9;
+
 
 }

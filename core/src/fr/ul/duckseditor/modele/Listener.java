@@ -87,6 +87,9 @@ public class Listener implements InputProcessor {
             }else if(body==monde.getSave().getBody())
             {
                 screen.save();
+            }else if(body==monde.getLoad().getBody())
+            {
+                screen.reload();
             }else if(body==monde.getPlay().getBody())
             {
                 isPlaying=!isPlaying;

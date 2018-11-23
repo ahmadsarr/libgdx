@@ -6,6 +6,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 import static  fr.ul.duckseditor.datafactory.Constant.*;
 public class Personnage extends Acteur {
@@ -30,4 +32,5 @@ public class Personnage extends Acteur {
     void draw(SpriteBatch sb) {
         sb.draw(_texture,body.getPosition().x,body.getPosition().y,PERSONNAGE_RAYON,PERSONNAGE_RAYON);
     }
+
 }

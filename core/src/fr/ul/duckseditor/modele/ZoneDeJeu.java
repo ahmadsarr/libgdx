@@ -3,6 +3,8 @@ package fr.ul.duckseditor.modele;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import fr.ul.duckseditor.datafactory.TextureFactory;
 
 import static fr.ul.duckseditor.datafactory.Constant.*;

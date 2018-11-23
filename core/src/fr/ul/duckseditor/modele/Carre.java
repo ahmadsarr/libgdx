@@ -9,6 +9,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import fr.ul.duckseditor.datafactory.TextureFactory;
 
 import static fr.ul.duckseditor.datafactory.Constant.*;
@@ -44,7 +46,7 @@ public class Carre extends Acteur {
                 angle+=360;
 
             sprite.setRotation(angle);
-             System.out.println(sprite.getRotation());
+
 
         }
         sprite.setPosition(body.getPosition().x,body.getPosition().y);
